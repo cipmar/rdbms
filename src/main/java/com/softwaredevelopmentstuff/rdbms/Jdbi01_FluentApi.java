@@ -5,7 +5,7 @@ import org.jdbi.v3.core.Jdbi;
 
 import java.util.List;
 
-public class BasicQueriesFluentApi {
+public class Jdbi01_FluentApi {
     public static void main(String[] args) {
         Jdbi jdbi = Jdbi.create("jdbc:h2:mem:test");
 
