@@ -1,5 +1,4 @@
-package com.softwaredevelopmentstuff.rdbms;
-
+import org.apache.commons.collections4.CollectionUtils;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
@@ -7,8 +6,12 @@ import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
+import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.Assert.assertTrue;
 
 interface UserDao {
     @SqlUpdate("CREATE TABLE user(id INTEGER PRIMARY KEY, name VARCHAR)")
@@ -29,7 +32,8 @@ interface UserDao {
 }
 
 public class Jdbi02_DeclarativeApi {
-    public static void main(String[] args) {
+    @Test
+    public void testDeclarativeApi() {
         Jdbi jdbi = Jdbi.create("jdbc:h2:mem:test");
         jdbi.installPlugin(new SqlObjectPlugin());
 
@@ -41,6 +45,10 @@ public class Jdbi02_DeclarativeApi {
             return dao.listAll();
         });
 
-        users.forEach(System.out::println);
+        assertTrue(CollectionUtils.isEqualCollection(users, Arrays.asList(
+                new User(1, "John"),
+                new User(2, "Anna"),
+                new User(3, "Michael")
+        )));
     }
 }

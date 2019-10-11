@@ -1,16 +1,19 @@
-
-package com.softwaredevelopmentstuff.rdbms;
-
+import org.apache.commons.collections4.CollectionUtils;
 import org.jdbi.v3.core.Jdbi;
+import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.assertTrue;
+
 public class Jdbi01_FluentApi {
-    public static void main(String[] args) {
+
+    @Test
+    public void testFluentApi() {
         Jdbi jdbi = Jdbi.create("jdbc:h2:mem:test");
 
         List<User> users = jdbi.withHandle(handle -> {
-
             handle.execute("CREATE TABLE user (id INTEGER PRIMARY KEY, name VARCHAR)");
 
             // inline positional params
@@ -33,11 +36,16 @@ public class Jdbi01_FluentApi {
                     .bindBean(new User(4, "David"))
                     .execute();
 
-            return handle.createQuery("SELECT * FROM user")
+            return handle.createQuery("SELECT * FROM user ORDER BY id")
                     .mapToBean(User.class)
                     .list();
         });
 
-        users.forEach(System.out::println);
+        assertTrue(CollectionUtils.isEqualCollection(users, Arrays.asList(
+                new User(1, "John"),
+                new User(2, "Marry"),
+                new User(3, "Michael"),
+                new User(4, "David")
+        )));
     }
 }
