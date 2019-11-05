@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.List;
 
 public class SimpleSelect {
 
@@ -15,8 +16,9 @@ public class SimpleSelect {
         Connection conn = DriverManager.getConnection(url, "root", "password");
         Jdbi jdbi = Jdbi.create(conn);
 
-        jdbi.useHandle(handle -> {
-            handle.createQuery("SELECT * FROM employees LIMIT 10").li
-        });
+        List<Employee> employees = jdbi.withHandle(handle ->
+                handle.createQuery("SELECT * FROM employees").mapToBean(Employee.class).list());
+
+        employees.forEach(System.out::println);
     }
 }
